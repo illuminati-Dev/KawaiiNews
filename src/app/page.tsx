@@ -5,40 +5,49 @@ import { useEffect, useState } from "react";
 import { NewsComponent } from "@/components/page";
 import { usePathname } from "next/navigation";
 
-
 export default function Home() {
   const [topStory, setTopStory] = useState([]);
   const [counts, setCounts] = useState(6);
   const [loading, setLoading] = useState(false);
-  const fetchTStory = async () => {
+
+  const fetchTopStory = async () => {
     const res = await topNews(counts);
     setTopStory(res);
     setLoading(false);
   };
+
   useEffect(() => {
-    fetchTStory();
+    fetchTopStory();
   }, [counts]);
+
   const handleBtnClick = () => {
     setLoading(true);
     setCounts(counts + 3);
   };
-  const ok = usePathname();
+
+  const currentPath = usePathname();
+
   return (
     <>
-      { ok === "/" && <NewsComponent newsType="Top Stories" newsData={topStory} />}
+      {currentPath === "/" && <NewsComponent newsType="Top Stories" newsData={topStory} />}
       <div className="flex justify-center">
-        { loading ? (<button type="button" className="bg-white hover:bg-black text-black hover:text-white font-bold py-2 px-4 rounded" disabled>
-          <svg className="animate-spin h-1 w-5 mr-3 ..." viewBox="0 0 24 24"></svg>
-          Loading....
-        </button>) :
-
-        (<button
-          className="bg-white hover:bg-black text-black hover:text-white font-bold py-2 px-4 rounded"
-          onClick={handleBtnClick}
-        >
-          Load More
-        </button>)
-        }
+        {loading ? (
+          <button
+            type="button"
+            className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded shadow-md"
+            disabled
+          >
+            <div className="spinner-border h-5 w-5 mr-3 border-t-2 border-white"></div>
+            Loading....
+          </button>
+        ) : (
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow-md"
+            onClick={handleBtnClick}
+          >
+            Load More
+          </button>
+        )}
       </div>
     </>
   );
